@@ -22,3 +22,5 @@ CMakeCache.txt
 Makefile
 html
 latex
+*.session
+bots
