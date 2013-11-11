@@ -97,7 +97,7 @@ int main()
         // one step each n milliseconds
         if (acc_time > 100) {
 
-            bots.step(delta);
+            bots.step();
             acc_time = 0;
         }
 
