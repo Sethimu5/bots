@@ -44,10 +44,7 @@ bots::~bots()
 
 bot *bots::find_at(const bot::position & pos)
 {
-    auto it = std::find_if(_bots.begin(), _bots.end(), 
-            [&pos] (const bot & the_bot) { 
-                return the_bot.get_position() == pos; 
-            });
+    auto it = iterator_at(pos);
 
     if (it != _bots.end()) {
         return &(*it);
@@ -130,5 +127,22 @@ std::map<bot::team_id, size_t> bots::bot_count() const {
 
 bool bots::game_over() const {
     return bot_count().size() < 2;
+}
+
+
+std::vector<bot>::iterator bots::iterator_at(const bot::position & pos) {
+    return std::find_if(_bots.begin(), _bots.end(), 
+            [&pos] (const bot & the_bot) { 
+                return the_bot.get_position() == pos; 
+            });
+}
+
+bot &bots::operator[](const bot::position & pos) {
+    *iterator_at(pos);
+}
+
+const bot &bots::operator[](const bot::position & pos) const{
+    // yeah, "never use const_cast"...
+    return const_cast<const bot&>(const_cast<bots*>(this)->operator[](pos));
 }
 

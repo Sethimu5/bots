@@ -39,6 +39,9 @@ class bots {
         // move is not really needed here
         _bots.push_back(std::move(new_bot));
     } 
+    
+    std::vector<bot>::iterator iterator_at(const bot::position & pos);
+
   public:
     
   class too_many_bots:std::exception {
@@ -56,6 +59,16 @@ class bots {
     bot *find_at(const bot::position & pos);
 
     const bot *find_at(const bot::position & pos) const;
+
+    /**
+     * @warning returns a reference and assumes that the bot <b>exists</b>.
+     */
+    bot & operator[](const bot::position & pos);
+
+    /**
+     * <code>const</code> version of the operator[].
+     */
+    const bot & operator[](const bot::position & pos) const;
 
     bool empty(const bot::position & p) const;
 
