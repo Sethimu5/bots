@@ -69,9 +69,9 @@ class bots {
     bot *attacks(const bot & the_bot, const direction & dir);
 
     /**
-     * a loop. use it with delta in milliseconds.
+     * a loop.
      */
-    void step(int delta);
+    void step();
 
     /**
      * iterates over the full vector of bots.

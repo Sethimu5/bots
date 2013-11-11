@@ -105,7 +105,7 @@ bot *bots::attacks(const bot & the_bot, const direction & dir)
 }
 
 // FIXME test implementation, doesn't have any sense at all
-void bots::step(int time)
+void bots::step()
 {
     // acting and dying in the same loop changes the semantics
     // currently, a bot can be dead but kill and move during the current

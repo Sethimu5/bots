@@ -3,7 +3,6 @@ cmake_minimum_required (VERSION 2.6)
 project (bots)
 
 Find_Package ( SDL REQUIRED )
-#Find_Package ( SDL_gfx REQUIRED )
 find_package(OpenGL REQUIRED )
 
 add_definitions(-std=c++11)
