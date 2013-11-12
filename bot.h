@@ -26,7 +26,7 @@ class bot
 
         // this should be read from a config file... any volunteers?
         // what about a quake-like console? there are some libraries for that!
-        static const int MAX_ENERGY = 3;
+        static const int MAX_ENERGY = 1;
         static const int BASE_ATTACK = 2;
         static const int BASE_DEFENSE = 1;
         static const int KILLS_FOR_ENERGY = 3;
