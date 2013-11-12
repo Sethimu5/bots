@@ -8,8 +8,7 @@ bots::bots(bot::field_size width, bot::field_size height):_width(width),
 
 void bots::generate(size_t number_teams, size_t bots_per_team) throw(too_many_bots)
 {
-
-    std::random_device rd;
+std::random_device rd;
     std::mt19937 gen(rd());
     std::mt19937 gen2(rd());
     std::uniform_int_distribution < bot::field_size > random_width(0, _width - 1);
@@ -79,7 +78,6 @@ void bots::perform_action(bot & the_bot)
     const direction & dir = the_bot.get_next_direction();
 
     if (bot * victim = attacks(the_bot, dir)) {
-        std::cout << "atatatatatatatack!" << std::endl;
         victim->_energy = std::max(0, 
                 victim->_energy - std::max(0, 
                     the_bot.get_attack () - victim->get_defense()));
@@ -101,21 +99,17 @@ bot *bots::attacks(const bot & the_bot, const direction & dir)
         return nullptr;
     }
 }
+const bot *bots::attacks(const bot & the_bot, const direction & dir) const {
+    // yeah, "never use const_cast"...
+    return const_cast<const bot*>(const_cast<bots*>(this)->attacks(the_bot, dir));
+}
 
-// FIXME test implementation, doesn't have any sense at all
 void bots::step()
 {
-    // acting and dying in the same loop changes the semantics
-    // currently, a bot can be dead but kill and move during the current
-    // turn
     for_each_bot([this] (bot & the_bot) { perform_action(the_bot); });
 
-    // remove dead bots
-    for (auto it = _bots.begin(); it != _bots.end(); it++) {
-        if ((*it).get_energy() <= 0) {
-            _bots.erase(it);
-        }
-    }
+    _bots.erase( std::remove_if( _bots.begin(), _bots.end(), 
+                [] (const bot & b) {return b.get_energy() <= 0;}) , _bots.end() );
 }
 
 std::map<bot::team_id, size_t> bots::bot_count() const {
@@ -131,15 +125,16 @@ bool bots::game_over() const {
 }
 
 
-std::vector<bot>::iterator bots::iterator_at(const bot::position & pos) {
+bots::field_bots::iterator bots::iterator_at(const bot::position & pos) {
     return std::find_if(_bots.begin(), _bots.end(), 
             [&pos] (const bot & the_bot) { 
-                return the_bot.get_position() == pos; 
+            return the_bot.get_position() == pos; 
             });
 }
 
 bot &bots::operator[](const bot::position & pos) {
-    *iterator_at(pos);
+    return *iterator_at(pos);
+
 }
 
 const bot &bots::operator[](const bot::position & pos) const{

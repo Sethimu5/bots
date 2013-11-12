@@ -6,6 +6,7 @@
 #include <random>
 #include <memory>
 #include <algorithm>
+#include <list>
 
 #include "bot.h"
 
@@ -21,7 +22,7 @@ class bots {
 
   private:
 
-    typedef std::vector < bot > field_bots;
+    typedef std::list < bot > field_bots;
 
 
     void perform_action(bot & the_bot);
@@ -29,7 +30,6 @@ class bots {
     bot::field_size _width;
     bot::field_size _height;
     field_bots _bots;
-
 
     /**
      * beware, there is no emptiness checking!
@@ -40,10 +40,9 @@ class bots {
         _bots.push_back(std::move(new_bot));
     } 
     
-    std::vector<bot>::iterator iterator_at(const bot::position & pos);
+    field_bots::iterator iterator_at(const bot::position & pos);
 
   public:
-    
   class too_many_bots:std::exception {
     };
 
@@ -80,6 +79,8 @@ class bots {
      * @return a pointer to the bot `the_bot` would attack or nullptr otherwise
      */
     bot *attacks(const bot & the_bot, const direction & dir);
+    
+    const bot *attacks(const bot & the_bot, const direction & dir) const;
 
     /**
      * a loop.
@@ -102,6 +103,7 @@ class bots {
     std::map<bot::team_id, size_t> bot_count() const;
 
     bool game_over() const;
+    
 };
 
 #endif
