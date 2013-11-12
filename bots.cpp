@@ -67,9 +67,9 @@ bool bots::empty(const bot::position & pos) const
 bool bots::can_move(const bot & the_bot, const direction & dir) const
 {
     const bot::position & p = bot::new_position(the_bot.get_position(), dir);
-    return p.first >= 0 && p.first < _width &&
+    return dir == NOTHING || (p.first >= 0 && p.first < _width &&
         p.second >= 0 && p.second < _height && 
-        empty(p);
+        empty(p));
 }
 
 void bots::perform_action(bot & the_bot)
