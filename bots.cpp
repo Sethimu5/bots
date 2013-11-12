@@ -38,23 +38,27 @@ std::random_device rd;
 
 bots::~bots()
 {
+    //for_each_bot([] (bot * the_bot) {
+            //delete the_bot;
+            //});
 }
 
 
-bot *bots::find_at(const bot::position & pos)
+std::shared_ptr<bot> bots::find_at(const bot::position & pos)
 {
     auto it = iterator_at(pos);
 
     if (it != _bots.end()) {
-        return &(*it);
+        return *it;
     } else {
         return nullptr;
     }
 }
 
-const bot *bots::find_at(const bot::position & pos) const {
+const std::shared_ptr<bot> bots::find_at(const bot::position & pos) const {
     // yeah, "never use const_cast"...
-    return const_cast<const bot*>(const_cast<bots*>(this)->find_at(pos));
+    //return std::const_pointer_cast<const std::shared_ptr<bot> >(const_cast<bots*>(this)->find_at(pos));
+    return nullptr;
 }
 
 bool bots::empty(const bot::position & pos) const
@@ -71,13 +75,13 @@ bool bots::can_move(const bot & the_bot, const direction & dir) const
         empty(p));
 }
 
-void bots::perform_action(bot & the_bot)
+void bots::perform_action(std::shared_ptr<bot> the_bot)
 {
 
-    bot::position & pos = the_bot._position;
-    const direction & dir = the_bot.get_next_direction();
+    bot::position & pos = the_bot->_position;
+    const direction & dir = the_bot->get_next_direction();
 
-    if (bot * victim = attacks(the_bot, dir)) {
+    if (std::shared_ptr<bot> victim = attacks(the_bot, dir)) {
         victim->_energy = std::max(0, 
                 victim->_energy - std::max(0, 
                     the_bot.get_attack () - victim->get_defense()));
@@ -88,9 +92,9 @@ void bots::perform_action(bot & the_bot)
 }
 
 
-bot *bots::attacks(const bot & the_bot, const direction & dir)
+std::shared_ptr<bot> bots::attacks(const std::shared_ptr<bot> the_bot, const direction & dir)
 {
-    bot * b = find_at(bot::new_position(the_bot.get_position(), dir));
+    std::shared_ptr<bot> b = find_at(bot::new_position(the_bot.get_position(), dir));
 
     if(nullptr != b && b->get_team() != the_bot.get_team()) {
         return b;
@@ -99,14 +103,15 @@ bot *bots::attacks(const bot & the_bot, const direction & dir)
         return nullptr;
     }
 }
-const bot *bots::attacks(const bot & the_bot, const direction & dir) const {
+const std::shared_ptr<bot> bots::attacks(const std::shared_ptr<bot> the_bot, const direction & dir) const {
     // yeah, "never use const_cast"...
-    return const_cast<const bot*>(const_cast<bots*>(this)->attacks(the_bot, dir));
+    //return const_cast<const bot*>(const_cast<bots*>(this)->attacks(the_bot, dir));
+        return nullptr;
 }
 
 void bots::step()
 {
-    for_each_bot([this] (bot & the_bot) { perform_action(the_bot); });
+    for_each_bot([this] (std::shared_ptr<bot> the_bot) { perform_action(the_bot); });
 
     _bots.erase( std::remove_if( _bots.begin(), _bots.end(), 
                 [] (const bot & b) {return b.get_energy() <= 0;}) , _bots.end() );
@@ -132,7 +137,7 @@ bots::field_bots::iterator bots::iterator_at(const bot::position & pos) {
             });
 }
 
-bot &bots::operator[](const bot::position & pos) {
+std::shared_ptr<bot> bots::operator[](const bot::position & pos) {
     return *iterator_at(pos);
 
 }

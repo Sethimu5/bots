@@ -22,10 +22,12 @@ class bots {
 
   private:
 
-    typedef std::list < bot > field_bots;
+    typedef std::list < std::shared_ptr<bot> > field_bots;
 
 
-    void perform_action(bot & the_bot);
+
+    void perform_action(std::shared_ptr<bot> the_bot);
+    //void perform_action(bot & the_bot);
 
     bot::field_size _width;
     bot::field_size _height;
@@ -35,9 +37,7 @@ class bots {
      * beware, there is no emptiness checking!
      */
     inline void create_bot(bot::position position, bot::team_id team) {
-        bot new_bot(team, position);
-        // move is not really needed here
-        _bots.push_back(std::move(new_bot));
+        _bots.push_back(std::make_shared<bot>(team, position));
     } 
     
     field_bots::iterator iterator_at(const bot::position & pos);
@@ -48,16 +48,19 @@ class bots {
 
     bots(bot::field_size width, bot::field_size height);
 
-    virtual ~ bots();
+    virtual ~bots();
 
     /**
      * generates bots. this is actually the only way to populate the playground.
      */
     void generate(size_t number_teams, size_t bots_per_team) throw(too_many_bots);
 
-    bot *find_at(const bot::position & pos);
+    std::shared_ptr<bot> find_at(const bot::position & pos);
 
-    const bot *find_at(const bot::position & pos) const;
+    const std::shared_ptr<bot> find_at(const bot::position & pos) const;
+    //bot *find_at(const bot::position & pos);
+
+    //const bot *find_at(const bot::position & pos) const;
 
     /**
      * @warning returns a reference and assumes that the bot <b>exists</b>.
@@ -78,9 +81,11 @@ class bots {
      * @param dir the dir the bot is currently moving towards
      * @return a pointer to the bot `the_bot` would attack or nullptr otherwise
      */
-    bot *attacks(const bot & the_bot, const direction & dir);
+    //bot *attacks(const bot & the_bot, const direction & dir);
+    std::shared_ptr<bot> attacks(const std::shared_ptr<bot> the_bot, const direction & dir);
     
-    const bot *attacks(const bot & the_bot, const direction & dir) const;
+    const std::shared_ptr<bot> attacks(const std::shared_ptr<bot> the_bot, const direction & dir) const;
+    //const bot *attacks(const bot & the_bot, const direction & dir) const;
 
     /**
      * a loop.
@@ -92,11 +97,11 @@ class bots {
      *
      * this is the <code>const</code> version. non-const version also available.
      */
-    inline void for_each_bot(std::function < void (const bot & the_bot) > fun) const {
+    inline void for_each_bot(std::function < void (const std::shared_ptr<bot> the_bot) > fun) const {
         for_each(_bots.begin(), _bots.end(), fun);
     }
 
-    inline void for_each_bot(std::function < void (bot & the_bot) > fun) {
+    inline void for_each_bot(std::function < void (std::shared_ptr<bot> the_bot) > fun) {
         for_each(_bots.begin(), _bots.end(), fun);
     }
 
