@@ -79,6 +79,7 @@ void bots::perform_action(bot & the_bot)
     const direction & dir = the_bot.get_next_direction();
 
     if (bot * victim = attacks(the_bot, dir)) {
+        std::cout << "atatatatatatatack!" << std::endl;
         victim->_energy = std::max(0, 
                 victim->_energy - std::max(0, 
                     the_bot.get_attack () - victim->get_defense()));
