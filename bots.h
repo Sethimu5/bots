@@ -50,6 +50,10 @@ class bots {
 
     bots(bot::field_size width, bot::field_size height);
 
+    bots() = default;
+
+    bots(const bots &b) = default;
+
     virtual ~ bots();
 
     void generate(size_t number_teams, size_t bots_per_team) throw(too_many_bots);

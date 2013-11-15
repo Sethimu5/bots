@@ -46,6 +46,10 @@ class bot
 
         bot (team_id id, const position & pos);
 
+        bot() = default;
+
+        bot(const bot &b) = default;
+
         /**
          * use this static method to compute the next hypothetical position
          */
