@@ -7,7 +7,9 @@
 #include <memory>
 #include <algorithm>
 #include <list>
-
+#include <boost/archive/text_oarchive.hpp> 
+#include <boost/archive/text_iarchive.hpp> 
+#include <boost/serialization/list.hpp> 
 #include "bot.h"
 
 
@@ -50,10 +52,9 @@ class bots {
 
     virtual ~ bots();
 
-    /**
-     * generates bots. this is actually the only way to populate the playground.
-     */
     void generate(size_t number_teams, size_t bots_per_team) throw(too_many_bots);
+
+    bot::team_id generate_team(size_t number_of_bots) throw(too_many_bots);
 
     bot *find_at(const bot::position & pos);
 
@@ -103,7 +104,19 @@ class bots {
     std::map<bot::team_id, size_t> bot_count() const;
 
     bool game_over() const;
+
+    private:
     
+    friend class boost::serialization::access; 
+
+    template <typename Archive> 
+        void serialize(Archive &ar, const unsigned int version) 
+        { 
+            ar & _width;
+            ar & _height;
+            ar & _bots;
+        } 
+
 };
 
 #endif

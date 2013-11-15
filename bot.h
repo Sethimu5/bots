@@ -2,6 +2,9 @@
 #define _BOT_H_INCLUDED_
 
 #include <vector>
+#include <boost/archive/text_oarchive.hpp> 
+#include <boost/archive/text_iarchive.hpp> 
+#include <boost/serialization/utility.hpp>
 
 class bots;
 
@@ -116,6 +119,24 @@ class bot
          * @param victim the bot that has just died
          */
         void kills_bot(const bot & victim);
+
+    private:
+
+        friend class boost::serialization::access; 
+
+        template <typename Archive> 
+            void serialize(Archive &ar, const unsigned int version) 
+            { 
+
+                ar & _attack;
+                ar & _defense;
+                ar & _kills;
+                ar & _experience;
+                ar & _energy;
+                ar & _team;
+                ar & _position;
+                ar & _next_direction;
+            } 
 
 };
 
