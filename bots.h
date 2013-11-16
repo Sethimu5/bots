@@ -12,7 +12,6 @@
 #include <boost/serialization/list.hpp> 
 #include "bot.h"
 
-
 /**
  * bots
  * ====
@@ -38,7 +37,8 @@ class bots {
      */
     inline void create_bot(bot::position position, bot::team_id team) {
         bot new_bot(team, position);
-        // move is not really needed here
+        // move is not really needed here:
+        // http://stackoverflow.com/questions/11572669/move-with-vectorpush-back
         _bots.push_back(std::move(new_bot));
     } 
     
@@ -55,6 +55,10 @@ class bots {
     bots(const bots &b) = default;
 
     virtual ~ bots();
+
+    inline bot::position get_size() const {
+        return {_width, _height};
+    }
 
     void generate(size_t number_teams, size_t bots_per_team) throw(too_many_bots);
 
@@ -142,6 +146,10 @@ class bots {
 
     std::map<bot::team_id, size_t> bot_count() const;
 
+    /**
+     * @param id the id of the team you want the bots from.
+     * @returns a vector containing pointers to the bots belonging to team <code>id</code>
+     */
     std::vector <bot *> team_bots(bot::team_id id);
 
     /**
