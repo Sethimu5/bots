@@ -22,7 +22,7 @@
  */
 class bots {
 
-  private:
+    public:
 
     typedef std::list < bot > field_bots;
 
