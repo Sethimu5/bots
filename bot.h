@@ -8,8 +8,6 @@
 
 class bots;
 
-enum direction { NOTHING, N, NE, E, SE, S, SW, W, NW };
-
 /**
  * bot
  * ===
@@ -41,6 +39,8 @@ class bot
         typedef unsigned int team_id ;
 
         typedef unsigned int field_size ;
+
+        enum direction { NOTHING, N, NE, E, SE, S, SW, W, NW };
 
         typedef std::pair<field_size, field_size> position ;
 
@@ -83,12 +83,28 @@ class bot
             return _position;
         }
 
+        inline field_size get_x() const {
+            return get_position().first;
+        }
+
+        inline field_size get_y() const {
+            return get_position().second;
+        }
+
         inline const direction & get_next_direction() const {
             return _next_direction;
         }
 
         inline status get_kills() const {
             return _kills;
+        }
+
+        inline bool operator==(const bot & other) const {
+            return get_position() == other.get_position();
+        }
+
+        inline bool operator!=(const bot & other) const {
+            return !(*this == other);
         }
 
         /**

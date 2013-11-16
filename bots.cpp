@@ -96,10 +96,10 @@ bool bots::empty(const bot::position & pos) const
 }
 
 // TODO check whether the other bot is moving (you can move if the other guy is moving
-bool bots::can_move(const bot & the_bot, const direction & dir) const
+bool bots::can_move(const bot & the_bot, const bot::direction & dir) const
 {
     const bot::position & p = bot::new_position(the_bot.get_position(), dir);
-    return dir == NOTHING || (p.first >= 0 && p.first < _width &&
+    return dir == bot::NOTHING || (p.first >= 0 && p.first < _width &&
         p.second >= 0 && p.second < _height && 
         empty(p));
 }
@@ -108,7 +108,7 @@ void bots::perform_action(bot & the_bot)
 {
 
     bot::position & pos = the_bot._position;
-    const direction & dir = the_bot.get_next_direction();
+    const bot::direction & dir = the_bot.get_next_direction();
 
     if (bot * victim = attacks(the_bot, dir)) {
         victim->_energy = std::max(0, 
@@ -121,7 +121,7 @@ void bots::perform_action(bot & the_bot)
 }
 
 
-bot *bots::attacks(const bot & the_bot, const direction & dir)
+bot *bots::attacks(const bot & the_bot, const bot::direction & dir)
 {
     bot * b = find_at(bot::new_position(the_bot.get_position(), dir));
 
@@ -132,7 +132,7 @@ bot *bots::attacks(const bot & the_bot, const direction & dir)
         return nullptr;
     }
 }
-const bot *bots::attacks(const bot & the_bot, const direction & dir) const {
+const bot *bots::attacks(const bot & the_bot, const bot::direction & dir) const {
     // yeah, "never use const_cast"...
     return const_cast<const bot*>(const_cast<bots*>(this)->attacks(the_bot, dir));
 }
@@ -173,5 +173,25 @@ bot &bots::operator[](const bot::position & pos) {
 const bot &bots::operator[](const bot::position & pos) const{
     // yeah, "never use const_cast"...
     return const_cast<const bot&>(const_cast<bots*>(this)->operator[](pos));
+}
+
+
+std::vector<bot *> bots::include_if(std::function<bool(const bot &)> fun)  {
+    std::vector<bot *> destiny;
+    for_each_bot([this, &fun, &destiny] (bot &the_bot) {
+        if (fun(the_bot)) {
+            destiny.push_back(&the_bot);
+        }
+    });
+    return destiny;
+}
+
+std::vector<bot *> bots::adjacent(const bot::position & pos)  {
+    return include_if([this, &pos] (const bot& b) { return is_adjacent((*this)[pos], b); });
+}
+
+
+std::vector <bot *> bots::team_bots(bot::team_id id) {
+    return include_if([this, &id] (const bot& b) { return b.get_team() == id; });
 }
 

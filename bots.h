@@ -76,16 +76,16 @@ class bots {
 
     bool empty(const bot::position & p) const;
 
-    bool can_move(const bot & the_bot, const direction & dir) const;
+    bool can_move(const bot & the_bot, const bot::direction & dir) const;
 
     /**
      * @param the_bot the bot that could be attacking
      * @param dir the dir the bot is currently moving towards
      * @return a pointer to the bot `the_bot` would attack or nullptr otherwise
      */
-    bot *attacks(const bot & the_bot, const direction & dir);
+    bot *attacks(const bot & the_bot, const bot::direction & dir);
     
-    const bot *attacks(const bot & the_bot, const direction & dir) const;
+    const bot *attacks(const bot & the_bot, const bot::direction & dir) const;
 
     /**
      * a loop.
@@ -105,8 +105,48 @@ class bots {
         for_each(_bots.begin(), _bots.end(), fun);
     }
 
+    /**
+     * @returns a vector with pointers to adjacent bots.
+     * @warning assumes that <code>pos</code> contains a bot.
+     */
+    std::vector<bot *> adjacent(const bot::position & pos) ;
+
+    /**
+     * @returns a vector with pointers to bots satisfying the <code>fun</code> function.
+     */
+    std::vector<bot *> include_if(std::function<bool(const bot &)> fun);
+
+    /**
+     * this method checks that bot1 and bot2 are different, you don't have to do it yourself.
+     * @param bot1 a bot
+     * @param bot2 another bot
+     * @returns true if bot1 and bot2 are adjacent, false otherwise
+     */
+    inline bool is_adjacent(const bot &bot1, const bot& bot2) const {
+        return bot1 != bot2 && distance_x(bot1, bot2) <= 1 && distance_y(bot1, bot2) <= 1;
+    }
+
+    /**
+     * x-distance between two bots.
+     */
+    inline bot::field_size distance_x(const bot & bot1, const bot & bot2) const {
+        return abs(bot1.get_x() - bot2.get_x());
+    }
+
+    /**
+     * y-distance between two bots.
+     */
+    inline bot::field_size distance_y(const bot & bot1, const bot & bot2) const {
+        return abs(bot1.get_y() - bot2.get_y());
+    }
+
     std::map<bot::team_id, size_t> bot_count() const;
 
+    std::vector <bot *> team_bots(bot::team_id id);
+
+    /**
+     * @return whether the game is over according to the rules
+     */
     bool game_over() const;
 
     private:
