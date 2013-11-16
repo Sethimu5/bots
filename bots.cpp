@@ -6,32 +6,65 @@ bots::bots(bot::field_size width, bot::field_size height):_width(width),
 {
 }
 
-void bots::generate(size_t number_teams, size_t bots_per_team) throw(too_many_bots)
-{
-std::random_device rd;
+
+bot::team_id bots::generate_team(size_t number_of_bots) throw(too_many_bots) {
+    std::random_device rd;
     std::mt19937 gen(rd());
     std::mt19937 gen2(rd());
     std::uniform_int_distribution < bot::field_size > random_width(0, _width - 1);
     std::uniform_int_distribution < bot::field_size > random_height(0, _height - 1);
 
-    if (number_teams * bots_per_team > _width * _height) {
+    // get a free team id
+    auto bc = bot_count();
+    int i = 0;
+    while(bc.find(i) != bc.end()) {
+        i++;
+    }
+
+    if (number_of_bots + _bots.size() > _width * _height) {
         throw new too_many_bots;
     }
+
+    for (size_t j = 0; j < number_of_bots; j++) {
+
+        std::pair < int, int > position;
+        do {
+            position.first = random_width(gen);
+            position.second = random_height(gen2);
+        } while (!empty(position));
+
+        create_bot(position, i);
+    }
+    return i;
+}
+
+void bots::generate(size_t number_teams, size_t bots_per_team) throw(too_many_bots)
+{
+//std::random_device rd;
+    //std::mt19937 gen(rd());
+    //std::mt19937 gen2(rd());
+    //std::uniform_int_distribution < bot::field_size > random_width(0, _width - 1);
+    //std::uniform_int_distribution < bot::field_size > random_height(0, _height - 1);
+
+    //if (number_teams * bots_per_team > _width * _height) {
+        //throw new too_many_bots;
+    //}
 
     // reasonably efficient for sparse distributions
     // a las vegas algorithm!!
     for (size_t i = 0; i < number_teams; ++i) {
 
-        for (size_t j = 0; j < bots_per_team; j++) {
+        generate_team(bots_per_team);
+        //for (size_t j = 0; j < bots_per_team; j++) {
 
-            std::pair < int, int >position;
-            do {
-                position.first = random_width(gen);
-                position.second = random_height(gen2);
-            } while (!empty(position));
+            //std::pair < int, int >position;
+            //do {
+                //position.first = random_width(gen);
+                //position.second = random_height(gen2);
+            //} while (!empty(position));
 
-            create_bot(position, i);
-        }
+            //create_bot(position, i);
+        //}
 
     }
 }
