@@ -158,7 +158,7 @@ std::vector<bot *> bots::adjacent(const bot::position & pos)  {
 }
 
 
-std::vector <bot *> bots::my_bots(bot::team_id id) {
+std::vector <bot *> bots::team_bots(bot::team_id id) {
     return include_if([this, &id] (const bot& b) { return b.get_team() == id; });
 }
 

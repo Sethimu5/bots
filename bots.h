@@ -137,7 +137,7 @@ class bots {
 
     std::map<bot::team_id, size_t> bot_count() const;
 
-    std::vector <bot *> my_bots(bot::team_id id);
+    std::vector <bot *> team_bots(bot::team_id id);
 
     /**
      * @return whether the game is over according to the rules
