@@ -152,10 +152,6 @@ class bots {
      */
     std::vector <bot *> team_bots(bot::team_id id);
 
-    /**
-     * @return whether the game is over according to the rules
-     */
-    bool game_over() const;
 
     private:
     

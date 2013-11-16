@@ -7,6 +7,7 @@ bots::bots(bot::field_size width, bot::field_size height):_width(width),
 }
 
 
+
 bot::team_id bots::generate_team(size_t number_of_bots) throw(too_many_bots) {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -151,10 +152,6 @@ std::map<bot::team_id, size_t> bots::bot_count() const {
 
     // RVO: http://en.wikipedia.org/wiki/Return_value_optimization
     return result;
-}
-
-bool bots::game_over() const {
-    return bot_count().size() < 2;
 }
 
 
