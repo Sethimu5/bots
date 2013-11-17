@@ -60,6 +60,11 @@ class bots {
         return {_width, _height};
     }
 
+    inline void set_size(bot::field_size width, bot::field_size height) {
+        _width = width;
+        _height = height;
+    }
+
     void generate(size_t number_teams, size_t bots_per_team) throw(too_many_bots);
 
     bot::team_id generate_team(size_t number_of_bots) throw(too_many_bots);
