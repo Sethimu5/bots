@@ -1,11 +1,10 @@
 #include "bots.h"
 #include <algorithm>
 
-bots::bots(bot::field_size width, bot::field_size height):_width(width),
-    _height(height)
+bots::bots(bot::field_size width, bot::field_size height)
 {
+    set_size(width, height);
 }
-
 
 
 bot::team_id bots::generate_team(size_t number_of_bots) throw(too_many_bots) {
