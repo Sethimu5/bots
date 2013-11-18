@@ -7,7 +7,6 @@ bots::bots(bot::field_size width, bot::field_size height)
 }
 
 
-
 bot::team_id bots::generate_team(size_t number_of_bots) throw(too_many_bots) {
     std::random_device rd;
     std::mt19937 gen(rd());
